@@ -107,7 +107,8 @@ void Robot::RobotInit()
     m_moteurDroite.DisableVoltageCompensation();
     m_moteurDroiteFollower.DisableVoltageCompensation();
     m_moteurGaucheFollower2.DisableVoltageCompensation();
-    m_moteurDroiteFollower2.DisableVoltageCompensation();µ
+    m_moteurDroiteFollower2.DisableVoltageCompensation();
+    µ
 #endif
     m_moteurDroite.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
     m_moteurGauche.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
@@ -237,7 +238,7 @@ void Robot::TeleopPeriodic()
         if (m_motorCharacterizationTests.getState() == NLCharacterization_Tests::State::Stopped)
         {
             m_motorCharacterizationTests.nextTest();
-            sprintf(infos, "%s En Attente ... Appuyer sur A pour Démarrer.",m_motorCharacterizationTests.getCurrentTestDescription(desc, 256));
+            sprintf(infos, "%s En Attente ... Appuyer sur A pour Démarrer.", m_motorCharacterizationTests.getCurrentTestDescription(desc, 256));
             m_customEntry->SetString(infos);
         }
     }
@@ -270,7 +271,7 @@ void Robot::TeleopPeriodic()
         }
     }
 
-    // m_LogFileName.SetString(m_motorCharacterizationTests.getCurrentFileLogName(infos, 256));
+    m_LogFileName->SetString(m_motorCharacterizationTests.getCurrentFileLogName(infos, 256));
 }
 
 void Robot::TestInit()

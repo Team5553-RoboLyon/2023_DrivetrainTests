@@ -99,7 +99,7 @@ private:
 
   CSVLogFile *m_LogFile, *m_LogFileDriving;
   nt::GenericEntry *m_LogFileName, *m_PowerEntry, *m_logGyro, *m_LogFilenameDriving, *m_speedY, *m_speedX, *m_customEntry;
-  rev::CANSparkMax m_moteurDroite{1, rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_moteurDroite{1 , rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_moteurDroiteFollower{2, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_moteurDroiteFollower2{3, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_moteurGauche{4, rev::CANSparkMax::MotorType::kBrushless};

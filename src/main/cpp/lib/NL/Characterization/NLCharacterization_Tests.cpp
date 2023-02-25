@@ -51,6 +51,11 @@ NLCharacterization_Tests::NLCharacterization_Tests(
             TestData[2 * i].m_ramp = rampValue;
             TestData[2 * i + 1].m_ramp = rampValue;
         }
+        else
+        {
+            TestData[2 * i].m_ramp = 0.0;
+            TestData[2 * i + 1].m_ramp = 0.0;
+        }
     }
     std::cout << "Low voltage effectué" << std::endl;
     // Medium Voltages
@@ -127,12 +132,21 @@ void NLCharacterization_Tests::start()
     // setting ramp
     m_oldRamp = m_rightMotor->GetOpenLoopRampRate();
 
+    std::cout << "ramp : " << TestData[m_CurrentTestID].m_ramp << std::endl;
+
     m_rightMotor->SetOpenLoopRampRate(TestData[m_CurrentTestID].m_ramp);
     m_rightMotorFollower->SetOpenLoopRampRate(TestData[m_CurrentTestID].m_ramp);
     m_rightMotorFollower2->SetOpenLoopRampRate(TestData[m_CurrentTestID].m_ramp);
     m_leftMotor->SetOpenLoopRampRate(TestData[m_CurrentTestID].m_ramp);
     m_leftMotorFollower->SetOpenLoopRampRate(TestData[m_CurrentTestID].m_ramp);
     m_leftMotorFollower2->SetOpenLoopRampRate(TestData[m_CurrentTestID].m_ramp);
+
+    std::cout << "left ramp" << m_leftMotor->GetOpenLoopRampRate() << std::endl;
+    std::cout << "leftfolow ramp" << m_leftMotorFollower->GetOpenLoopRampRate() << std::endl;
+    std::cout << "leftfollow2 ramp" << m_leftMotorFollower2->GetOpenLoopRampRate() << std::endl;
+    std::cout << "right ramp" << m_leftMotor->GetOpenLoopRampRate() << std::endl;
+    std::cout << "rightfollow ramp" << m_leftMotorFollower->GetOpenLoopRampRate() << std::endl;
+    std::cout << "rightfollow2 ramp" << m_leftMotorFollower2->GetOpenLoopRampRate() << std::endl;
 
     m_externalEncoderLeft->Reset();
     m_externalEncoderRight->Reset();
@@ -170,13 +184,13 @@ char *NLCharacterization_Tests::getCurrentTestDescription(char *pmessage, uint s
 {
     char desc[256];
     sprintf(desc, "TEST %d / %d [ %.2f Volts || Rampe : %.2f ]", m_CurrentTestID + 1, m_nbTotalTest, TestData[m_CurrentTestID].m_voltage, TestData[m_CurrentTestID].m_ramp);
-    std::cout<<"sprintf passé"<<std::endl;
+    std::cout << "sprintf passé" << std::endl;
     uint sizetocopy = (NMIN(size_terminated_null_char_included, 256) - 1);
-    std::cout<<"uint passé"<<std::endl;
+    std::cout << "uint passé" << std::endl;
     strncpy(pmessage, desc, sizetocopy);
-    std::cout<<"strncpy passé"<<std::endl;
+    std::cout << "strncpy passé" << std::endl;
     pmessage[sizetocopy] = 0;
-    std::cout<<"pmessage passé"<<sizetocopy<<std::endl;
+    std::cout << "pmessage passé" << sizetocopy << std::endl;
     return pmessage;
 }
 
@@ -236,7 +250,7 @@ void NLCharacterization_Tests::fastLoop()
     case State::AskForStart:
         char prefix[512];
         char invertedPrefix[8];
-        sprintf(invertedPrefix, "L%d%dR%d%d", (int)m_leftMotor->GetInverted(), (int)m_leftMotorFollower->GetInverted(), (int)m_rightMotor->GetInverted(), (int)m_rightMotorFollower->GetInverted());
+        sprintf(invertedPrefix, "L%d%dR%d%d", (int)m_leftMotor->GetInverted(), (int)m_leftMotorFollower->GetInverted(), m_leftMotorFollower2->GetInverted(), (int)m_rightMotor->GetInverted(), (int)m_rightMotorFollower->GetInverted(), m_rightMotorFollower2->GetInverted());
 
         if (TestData[m_CurrentTestID].m_voltage < 0)
         {
@@ -246,8 +260,8 @@ void NLCharacterization_Tests::fastLoop()
         {
             sprintf(prefix, "/home/lvuser/logs/+_%s_%d_%.2fvolts_", invertedPrefix, m_CurrentTestID, TestData[m_CurrentTestID].m_voltage);
         }
-
-        m_LogFile = new CSVLogFile(prefix, "encoderGetD", "encoderGetG", "encoderGetRawD", "encoderGetRawG", "Theorical Voltage", "BusVoltageD1", "BusVoltageD2", "BusVoltageG1", "BusVoltageG2", "AppliedOutputD1", "AppliedOutputD2", "AppliedOutputG1", "AppliedOutputG2", "currentD1", "currentD2", "currentG1", "currentG2", "rampActive");
+        std::cout << "avant logfile" << std::endl;
+        m_LogFile = new CSVLogFile(prefix, "encoderGetD", "encoderGetG", "encoderGetRawD", "encoderGetRawG", "Theorical Voltage", "BusVoltageD1", "BusVoltageD2", "BusVoltageD3", "BusVoltageG1", "BusVoltageG2", "BusVoltageG3", "AppliedOutputD1", "AppliedOutputD2", "AppliedOutputD3", "AppliedOutputG1", "AppliedOutputG2", "AppliedOutputG3", "currentD1", "currentD2", "currentD3", "currentG1", "currentG2", "currentG3", "rampActive");
 
         BITSET(TestData[m_CurrentTestID].m_flags, 0);
         m_time0 = std::time(0);
@@ -265,7 +279,7 @@ void NLCharacterization_Tests::fastLoop()
     case State::Started:
         if (TestData[m_CurrentTestID].m_voltage > 0)
         {
-            std::cout<<m_externalEncoderRight->Get()<<std::endl;
+            std::cout << m_externalEncoderRight->Get() << std::endl;
             assert(m_externalEncoderLeft->Get() > -2048);
             assert(m_externalEncoderRight->Get() > -2048);
         }
