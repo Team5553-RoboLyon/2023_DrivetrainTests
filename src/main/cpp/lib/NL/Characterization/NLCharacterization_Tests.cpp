@@ -5,12 +5,12 @@
 #include "lib/NL/Characterization/NLCharacterization_Tests.h"
 
 NLCharacterization_Tests::NLCharacterization_Tests(
-    rev::CANSparkMax *leftMotor,
-    rev::CANSparkMax *leftMotorFollower,
-    rev::CANSparkMax *leftMotorFollower2,
-    rev::CANSparkMax *rightMotor,
-    rev::CANSparkMax *rightMotorFollower,
-    rev::CANSparkMax *rightMotorFollower2,
+    ctre::phoenix::motorcontrol::can::TalonFX *leftMotor,
+    ctre::phoenix::motorcontrol::can::TalonFX *leftMotorFollower,
+    ctre::phoenix::motorcontrol::can::TalonFX *leftMotorFollower2,
+    ctre::phoenix::motorcontrol::can::TalonFX *rightMotor,
+    ctre::phoenix::motorcontrol::can::TalonFX *rightMotorFollower,
+    ctre::phoenix::motorcontrol::can::TalonFX *rightMotorFollower2,
     frc::Encoder *externalEncoderLeft,
     frc::Encoder *externalEncoderRight,
     long nbTestLow,
@@ -129,24 +129,24 @@ void NLCharacterization_Tests::start()
     assert(m_state == State::Stopped);
     assert(m_CurrentTestID <= m_nbTotalTest);
 
-    // setting ramp
-    m_oldRamp = m_rightMotor->GetOpenLoopRampRate();
-
     std::cout << "ramp : " << TestData[m_CurrentTestID].m_ramp << std::endl;
 
-    m_rightMotor->SetOpenLoopRampRate(TestData[m_CurrentTestID].m_ramp);
-    m_rightMotorFollower->SetOpenLoopRampRate(TestData[m_CurrentTestID].m_ramp);
-    m_rightMotorFollower2->SetOpenLoopRampRate(TestData[m_CurrentTestID].m_ramp);
-    m_leftMotor->SetOpenLoopRampRate(TestData[m_CurrentTestID].m_ramp);
-    m_leftMotorFollower->SetOpenLoopRampRate(TestData[m_CurrentTestID].m_ramp);
-    m_leftMotorFollower2->SetOpenLoopRampRate(TestData[m_CurrentTestID].m_ramp);
+    m_rightMotor->ConfigOpenloopRamp(TestData[m_CurrentTestID].m_ramp);
+    m_rightMotorFollower->ConfigOpenloopRamp(TestData[m_CurrentTestID].m_ramp);
+    m_rightMotorFollower2->ConfigOpenloopRamp(TestData[m_CurrentTestID].m_ramp);
+    m_leftMotor->ConfigOpenloopRamp(TestData[m_CurrentTestID].m_ramp);
+    m_leftMotorFollower->ConfigOpenloopRamp(TestData[m_CurrentTestID].m_ramp);
+    m_leftMotorFollower2->ConfigOpenloopRamp(TestData[m_CurrentTestID].m_ramp);
 
-    std::cout << "left ramp" << m_leftMotor->GetOpenLoopRampRate() << std::endl;
-    std::cout << "leftfolow ramp" << m_leftMotorFollower->GetOpenLoopRampRate() << std::endl;
-    std::cout << "leftfollow2 ramp" << m_leftMotorFollower2->GetOpenLoopRampRate() << std::endl;
-    std::cout << "right ramp" << m_leftMotor->GetOpenLoopRampRate() << std::endl;
-    std::cout << "rightfollow ramp" << m_leftMotorFollower->GetOpenLoopRampRate() << std::endl;
-    std::cout << "rightfollow2 ramp" << m_leftMotorFollower2->GetOpenLoopRampRate() << std::endl;
+    // setting ramp
+    m_oldRamp = TestData[m_CurrentTestID].m_ramp;
+
+    // std::cout << "left ramp" << m_leftMotor->ramp() << std::endl;
+    // std::cout << "leftfolow ramp" << m_leftMotorFollower->GetOpenLoopRampRate() << std::endl;
+    // std::cout << "leftfollow2 ramp" << m_leftMotorFollower2->GetOpenLoopRampRate() << std::endl;
+    // std::cout << "right ramp" << m_leftMotor->GetOpenLoopRampRate() << std::endl;
+    // std::cout << "rightfollow ramp" << m_leftMotorFollower->GetOpenLoopRampRate() << std::endl;
+    // std::cout << "rightfollow2 ramp" << m_leftMotorFollower2->GetOpenLoopRampRate() << std::endl;
 
     m_externalEncoderLeft->Reset();
     m_externalEncoderRight->Reset();
@@ -159,12 +159,12 @@ void NLCharacterization_Tests::stop()
     assert(m_state == State::Started);
 
     // setting ramp
-    m_rightMotor->SetOpenLoopRampRate(m_oldRamp);
-    m_rightMotorFollower->SetOpenLoopRampRate(m_oldRamp);
-    m_rightMotorFollower2->SetOpenLoopRampRate(m_oldRamp);
-    m_leftMotor->SetOpenLoopRampRate(m_oldRamp);
-    m_leftMotorFollower->SetOpenLoopRampRate(m_oldRamp);
-    m_leftMotorFollower2->SetOpenLoopRampRate(m_oldRamp);
+    m_rightMotor->ConfigOpenloopRamp(m_oldRamp);
+    m_rightMotorFollower->ConfigOpenloopRamp(m_oldRamp);
+    m_rightMotorFollower2->ConfigOpenloopRamp(m_oldRamp);
+    m_leftMotor->ConfigOpenloopRamp(m_oldRamp);
+    m_leftMotorFollower->ConfigOpenloopRamp(m_oldRamp);
+    m_leftMotorFollower2->ConfigOpenloopRamp(m_oldRamp);
 
     // set state of test
     m_state = State::AskForStop;
@@ -266,12 +266,12 @@ void NLCharacterization_Tests::fastLoop()
         BITSET(TestData[m_CurrentTestID].m_flags, 0);
         m_time0 = std::time(0);
 
-        m_leftMotor->Set(TestData[m_CurrentTestID].m_voltage / m_leftMotor->GetBusVoltage());
-        m_leftMotorFollower->Set(TestData[m_CurrentTestID].m_voltage / m_leftMotorFollower->GetBusVoltage());
-        m_leftMotorFollower2->Set(TestData[m_CurrentTestID].m_voltage / m_leftMotorFollower2->GetBusVoltage());
-        m_rightMotor->Set(TestData[m_CurrentTestID].m_voltage / m_rightMotor->GetBusVoltage());
-        m_rightMotorFollower->Set(TestData[m_CurrentTestID].m_voltage / m_rightMotorFollower->GetBusVoltage());
-        m_rightMotorFollower2->Set(TestData[m_CurrentTestID].m_voltage / m_rightMotorFollower2->GetBusVoltage());
+        m_leftMotor->Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, TestData[m_CurrentTestID].m_voltage / m_leftMotor->GetBusVoltage());
+        m_leftMotorFollower->Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, TestData[m_CurrentTestID].m_voltage / m_leftMotorFollower->GetBusVoltage());
+        m_leftMotorFollower2->Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, TestData[m_CurrentTestID].m_voltage / m_leftMotorFollower2->GetBusVoltage());
+        m_rightMotor->Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, TestData[m_CurrentTestID].m_voltage / m_rightMotor->GetBusVoltage());
+        m_rightMotorFollower->Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, TestData[m_CurrentTestID].m_voltage / m_rightMotorFollower->GetBusVoltage());
+        m_rightMotorFollower2->Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, TestData[m_CurrentTestID].m_voltage / m_rightMotorFollower2->GetBusVoltage());
 
         m_state = State::Started;
         break;
@@ -307,12 +307,12 @@ void NLCharacterization_Tests::fastLoop()
                        m_leftMotor->GetBusVoltage(),
                        m_leftMotorFollower->GetBusVoltage(),
                        m_leftMotorFollower2->GetBusVoltage(),
-                       m_rightMotor->GetAppliedOutput(),
-                       m_rightMotorFollower->GetAppliedOutput(),
-                       m_rightMotorFollower2->GetAppliedOutput(),
-                       m_leftMotor->GetAppliedOutput(),
-                       m_leftMotorFollower->GetAppliedOutput(),
-                       m_leftMotorFollower2->GetAppliedOutput(),
+                       m_rightMotor->GetMotorOutputPercent(),
+                       m_rightMotorFollower->GetMotorOutputPercent(),
+                       m_rightMotorFollower2->GetMotorOutputPercent(),
+                       m_leftMotor->GetMotorOutputPercent(),
+                       m_leftMotorFollower->GetMotorOutputPercent(),
+                       m_leftMotorFollower2->GetMotorOutputPercent(),
                        m_rightMotor->GetOutputCurrent(),
                        m_rightMotorFollower->GetOutputCurrent(),
                        m_rightMotorFollower2->GetOutputCurrent(),
@@ -323,12 +323,12 @@ void NLCharacterization_Tests::fastLoop()
         break;
 
     case State::AskForStop:
-        m_leftMotor->StopMotor();
-        m_leftMotorFollower->StopMotor();
-        m_leftMotorFollower2->StopMotor();
-        m_rightMotor->StopMotor();
-        m_rightMotorFollower->StopMotor();
-        m_rightMotorFollower2->StopMotor();
+        m_leftMotor->Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.0);
+        m_leftMotorFollower->Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.0);
+        m_leftMotorFollower2->Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.0);
+        m_rightMotor->Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.0);
+        m_rightMotorFollower->Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.0);
+        m_rightMotorFollower2->Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.0);
         delete m_LogFile;
         m_LogFile = nullptr;
         m_state = State::Stopped;

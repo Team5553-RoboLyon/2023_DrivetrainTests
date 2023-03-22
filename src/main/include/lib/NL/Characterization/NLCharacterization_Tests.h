@@ -3,7 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #pragma once
-#include <rev/CANSparkMax.h>
+#include <ctre/phoenix/motorcontrol/can/TalonFX.h>
 #include <frc/Encoder.h>
 #include <assert.h>
 #include "lib/CSVLogFile.h"
@@ -34,12 +34,12 @@ public:
     Started = 2,
     AskForStop = 3
   };
-  NLCharacterization_Tests(rev::CANSparkMax *leftMotor,
-                           rev::CANSparkMax *leftMotorFollower,
-                           rev::CANSparkMax *leftMotorFollower2,
-                           rev::CANSparkMax *rightMotor,
-                           rev::CANSparkMax *rightMotorFollower,
-                           rev::CANSparkMax *rightMotorFollower2,
+  NLCharacterization_Tests(ctre::phoenix::motorcontrol::can::TalonFX *leftMotor,
+                           ctre::phoenix::motorcontrol::can::TalonFX *leftMotorFollower,
+                           ctre::phoenix::motorcontrol::can::TalonFX *leftMotorFollower2,
+                           ctre::phoenix::motorcontrol::can::TalonFX *rightMotor,
+                           ctre::phoenix::motorcontrol::can::TalonFX *rightMotorFollower,
+                           ctre::phoenix::motorcontrol::can::TalonFX *rightMotorFollower2,
                            frc::Encoder *externalEncoderLeft,
                            frc::Encoder *externalEncoderRight,
                            long nbTestLow,
@@ -65,12 +65,12 @@ public:
   uint areAllTestsDone();
 
 private:
-  rev::CANSparkMax *m_rightMotor;
-  rev::CANSparkMax *m_rightMotorFollower;
-  rev::CANSparkMax *m_rightMotorFollower2;
-  rev::CANSparkMax *m_leftMotor;
-  rev::CANSparkMax *m_leftMotorFollower;
-  rev::CANSparkMax *m_leftMotorFollower2;
+  ctre::phoenix::motorcontrol::can::TalonFX *m_rightMotor;
+  ctre::phoenix::motorcontrol::can::TalonFX *m_rightMotorFollower;
+  ctre::phoenix::motorcontrol::can::TalonFX *m_rightMotorFollower2;
+  ctre::phoenix::motorcontrol::can::TalonFX *m_leftMotor;
+  ctre::phoenix::motorcontrol::can::TalonFX *m_leftMotorFollower;
+  ctre::phoenix::motorcontrol::can::TalonFX *m_leftMotorFollower2;
 
   frc::Encoder *m_externalEncoderRight;
   frc::Encoder *m_externalEncoderLeft;

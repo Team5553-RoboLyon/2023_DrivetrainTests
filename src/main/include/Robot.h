@@ -17,7 +17,7 @@
 #include <frc/DoubleSolenoid.h>
 #include <frc/Encoder.h>
 #include <rev/CANSparkMax.h>
-#include <ctre/phoenix/motorcontrol/can/TalonFX>
+#include <ctre/phoenix/motorcontrol/can/TalonFX.h>
 #include <networktables/NetworkTableEntry.h>
 
 #include "lib/CSVLogFile.h"
@@ -100,19 +100,13 @@ private:
 
   CSVLogFile *m_LogFile, *m_LogFileDriving;
   nt::GenericEntry *m_LogFileName, *m_PowerEntry, *m_logGyro, *m_LogFilenameDriving, *m_speedY, *m_speedX, *m_customEntry;
-  rev::CANSparkMax m_moteurDroite{1, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_moteurDroiteFollower{2, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_moteurDroiteFollower2{3, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_moteurGauche{4, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_moteurGaucheFollower{5, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_moteurGaucheFollower2{6, rev::CANSparkMax::MotorType::kBrushless};
 
-  ctre:: : phoenix::motorcontrol::can::TalonFX m_moteurDroite{1};
-  ctre:: : phoenix::motorcontrol::can::TalonFX m_moteurDroiteFollower{2};
-  ctre:: : phoenix::motorcontrol::can::TalonFX m_moteurDroiteFollower2{3};
-  ctre:: : phoenix::motorcontrol::can::TalonFX m_moteurGauche{4};
-  ctre:: : phoenix::motorcontrol::can::TalonFX m_moteurGaucheFollower{5};
-  ctre:: : phoenix::motorcontrol::can::TalonFX m_moteurGaucheFollower2{6};
+  ctre::phoenix::motorcontrol::can::TalonFX m_moteurDroite{1};
+  ctre::phoenix::motorcontrol::can::TalonFX m_moteurDroiteFollower{2};
+  ctre::phoenix::motorcontrol::can::TalonFX m_moteurDroiteFollower2{3};
+  ctre::phoenix::motorcontrol::can::TalonFX m_moteurGauche{4};
+  ctre::phoenix::motorcontrol::can::TalonFX m_moteurGaucheFollower{5};
+  ctre::phoenix::motorcontrol::can::TalonFX m_moteurGaucheFollower2{6};
 
   frc::PowerDistribution m_pdp;
 

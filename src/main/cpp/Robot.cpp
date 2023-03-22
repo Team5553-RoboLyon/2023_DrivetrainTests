@@ -54,30 +54,30 @@ void Robot::Drive(double forward, double turn)
 
     // cout<<lwheel<<std::endl;
 
-    m_moteurGauche.Set(lwheel);
-    m_moteurGaucheFollower.Set(lwheel);
-    m_moteurGaucheFollower2.Set(lwheel);
-    m_moteurDroite.Set(rwheel);
-    m_moteurDroiteFollower.Set(rwheel);
-    m_moteurDroiteFollower2.Set(rwheel);
+    m_moteurGauche.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, lwheel);
+    m_moteurGaucheFollower.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, lwheel);
+    m_moteurGaucheFollower2.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, lwheel);
+    m_moteurDroite.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, rwheel);
+    m_moteurDroiteFollower.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, rwheel);
+    m_moteurDroiteFollower2.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, rwheel);
 }
 
 void Robot::RobotInit()
 {
     std::cout << "RobotInit Step 1" << std::endl;
-    m_moteurDroite.RestoreFactoryDefaults();
-    m_moteurGauche.RestoreFactoryDefaults();
-    m_moteurGaucheFollower2.RestoreFactoryDefaults();
-    m_moteurDroiteFollower2.RestoreFactoryDefaults();
-    m_moteurDroiteFollower.RestoreFactoryDefaults();
-    m_moteurGaucheFollower.RestoreFactoryDefaults();
+    m_moteurDroite.ConfigFactoryDefault();
+    m_moteurGauche.ConfigFactoryDefault();
+    m_moteurGaucheFollower2.ConfigFactoryDefault();
+    m_moteurDroiteFollower2.ConfigFactoryDefault();
+    m_moteurDroiteFollower.ConfigFactoryDefault();
+    m_moteurGaucheFollower.ConfigFactoryDefault();
 
-    m_moteurDroite.SetSmartCurrentLimit(40);
-    m_moteurDroiteFollower.SetSmartCurrentLimit(40);
-    m_moteurDroiteFollower2.SetSmartCurrentLimit(40);
-    m_moteurGauche.SetSmartCurrentLimit(40);
-    m_moteurGaucheFollower.SetSmartCurrentLimit(40);
-    m_moteurGaucheFollower2.SetSmartCurrentLimit(40);
+    m_moteurDroite.ConfigSupplyCurrentLimit(ctre::phoenix::motorcontrol::SupplyCurrentLimitConfiguration(true, 40, 40, 0)); // limite de courant
+    m_moteurDroiteFollower.ConfigSupplyCurrentLimit(ctre::phoenix::motorcontrol::SupplyCurrentLimitConfiguration(true, 40, 40, 0));
+    m_moteurDroiteFollower2.ConfigSupplyCurrentLimit(ctre::phoenix::motorcontrol::SupplyCurrentLimitConfiguration(true, 40, 40, 0));
+    m_moteurGauche.ConfigSupplyCurrentLimit(ctre::phoenix::motorcontrol::SupplyCurrentLimitConfiguration(true, 40, 40, 0));
+    m_moteurGaucheFollower.ConfigSupplyCurrentLimit(ctre::phoenix::motorcontrol::SupplyCurrentLimitConfiguration(true, 40, 40, 0));
+    m_moteurGaucheFollower2.ConfigSupplyCurrentLimit(ctre::phoenix::motorcontrol::SupplyCurrentLimitConfiguration(true, 40, 40, 0));
 
 #ifdef TIME_RAMP
     m_moteurDroite.SetOpenLoopRampRate(TIME_RAMP);
@@ -87,20 +87,27 @@ void Robot::RobotInit()
     m_moteurDroiteFollower2.SetOpenLoopRampRate(TIME_RAMP);
     m_moteurGaucheFollower2.SetOpenLoopRampRate(TIME_RAMP);
 #else
-    m_moteurDroite.SetOpenLoopRampRate(0);
-    m_moteurGauche.SetOpenLoopRampRate(0);
-    m_moteurDroiteFollower.SetOpenLoopRampRate(0);
-    m_moteurGaucheFollower.SetOpenLoopRampRate(0);
-    m_moteurDroiteFollower2.SetOpenLoopRampRate(0);
-    m_moteurGaucheFollower2.SetOpenLoopRampRate(0);
+    m_moteurDroite.ConfigOpenloopRamp(0);
+    m_moteurGauche.ConfigOpenloopRamp(0);
+    m_moteurDroiteFollower.ConfigOpenloopRamp(0);
+    m_moteurGaucheFollower.ConfigOpenloopRamp(0);
+    m_moteurDroiteFollower2.ConfigOpenloopRamp(0);
+    m_moteurGaucheFollower2.ConfigOpenloopRamp(0);
 #endif
 #if VOLTAGE_COMPENSATION
-    m_moteurDroite.EnableVoltageCompensation(VOLTAGE_COMPENSATION_VALUE);
-    m_moteurGauche.EnableVoltageCompensation(VOLTAGE_COMPENSATION_VALUE);
-    m_moteurDroiteFollower.EnableVoltageCompensation(VOLTAGE_COMPENSATION_VALUE);
-    m_moteurGaucheFollower.EnableVoltageCompensation(VOLTAGE_COMPENSATION_VALUE);
-    m_moteurDroiteFollower2.EnableVoltageCompensation(VOLTAGE_COMPENSATION_VALUE);
-    m_moteurGaucheFollower2.EnableVoltageCompensation(VOLTAGE_COMPENSATION_VALUE);
+    m_moteurDroite.EnableVoltageCompensation(true);
+    m_moteurGauche.EnableVoltageCompensation(true);
+    m_moteurDroiteFollower.EnableVoltageCompensation(true);
+    m_moteurGaucheFollower.EnableVoltageCompensation(true);
+    m_moteurDroiteFollower2.EnableVoltageCompensation(true);
+    m_moteurGaucheFollower2.EnableVoltageCompensation(true);
+
+    m_moteurDroite.ConfigVoltageCompSaturation(VOLTAGE_COMPENSATION_VALUE);
+    m_moteurGauche.ConfigVoltageCompSaturation(VOLTAGE_COMPENSATION_VALUE);
+    m_moteurDroiteFollower.ConfigVoltageCompSaturation(VOLTAGE_COMPENSATION_VALUE);
+    m_moteurGaucheFollower.ConfigVoltageCompSaturation(VOLTAGE_COMPENSATION_VALUE);
+    m_moteurDroiteFollower2.ConfigVoltageCompSaturation(VOLTAGE_COMPENSATION_VALUE);
+    m_moteurGaucheFollower2.ConfigVoltageCompSaturation(VOLTAGE_COMPENSATION_VALUE);
 #else
     m_moteurGauche.DisableVoltageCompensation();
     m_moteurGaucheFollower.DisableVoltageCompensation();
@@ -110,12 +117,13 @@ void Robot::RobotInit()
     m_moteurDroiteFollower2.DisableVoltageCompensation();
     µ
 #endif
-    m_moteurDroite.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-    m_moteurGauche.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-    m_moteurDroiteFollower.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-    m_moteurGaucheFollower.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-    m_moteurDroiteFollower2.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-    m_moteurGaucheFollower2.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+
+    m_moteurDroite.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+    m_moteurGauche.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+    m_moteurDroiteFollower.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+    m_moteurGaucheFollower.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+    m_moteurDroiteFollower2.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+    m_moteurGaucheFollower2.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
     std::cout << "RobotInit Step 2" << std::endl;
     m_PowerEntry = frc::Shuffleboard::GetTab("voltage").Add("Voltage", 0.0).WithWidget(frc::BuiltInWidgets::kTextView).GetEntry();
     m_LogFileName = frc::Shuffleboard::GetTab("voltage").Add("Logfile Name", "").WithWidget(frc::BuiltInWidgets::kTextView).GetEntry();
@@ -143,29 +151,29 @@ void Robot::RobotInit()
     m_moteurGaucheFollower.SetInverted(true);
     m_moteurGaucheFollower2.SetInverted(true);
 
-    m_moteurDroite.SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus0, 4);
-    m_moteurDroite.SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus1, 4);
-    m_moteurDroite.SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus2, 50);
+    m_moteurDroite.SetStatusFramePeriod(ctre::phoenix::motorcontrol::StatusFrameEnhanced::Status_1_General, 4);
+    m_moteurDroite.SetStatusFramePeriod(ctre::phoenix::motorcontrol::StatusFrameEnhanced::Status_2_Feedback0, 4);
+    m_moteurDroite.SetStatusFramePeriod(ctre::phoenix::motorcontrol::StatusFrameEnhanced::Status_3_Quadrature, 50);
 
-    m_moteurDroiteFollower.SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus0, 4);
-    m_moteurDroiteFollower.SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus1, 4);
-    m_moteurDroiteFollower.SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus2, 50);
+    m_moteurGauche.SetStatusFramePeriod(ctre::phoenix::motorcontrol::StatusFrameEnhanced::Status_1_General, 4);
+    m_moteurGauche.SetStatusFramePeriod(ctre::phoenix::motorcontrol::StatusFrameEnhanced::Status_2_Feedback0, 4);
+    m_moteurGauche.SetStatusFramePeriod(ctre::phoenix::motorcontrol::StatusFrameEnhanced::Status_3_Quadrature, 50);
 
-    m_moteurDroiteFollower2.SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus0, 4);
-    m_moteurDroiteFollower2.SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus1, 4);
-    m_moteurDroiteFollower2.SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus2, 50);
+    m_moteurDroiteFollower.SetStatusFramePeriod(ctre::phoenix::motorcontrol::StatusFrameEnhanced::Status_1_General, 4);
+    m_moteurDroiteFollower.SetStatusFramePeriod(ctre::phoenix::motorcontrol::StatusFrameEnhanced::Status_2_Feedback0, 4);
+    m_moteurDroiteFollower.SetStatusFramePeriod(ctre::phoenix::motorcontrol::StatusFrameEnhanced::Status_3_Quadrature, 50);
 
-    m_moteurGauche.SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus0, 4);
-    m_moteurGauche.SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus1, 4);
-    m_moteurGauche.SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus2, 50);
+    m_moteurDroiteFollower2.SetStatusFramePeriod(ctre::phoenix::motorcontrol::StatusFrameEnhanced::Status_1_General, 4);
+    m_moteurDroiteFollower2.SetStatusFramePeriod(ctre::phoenix::motorcontrol::StatusFrameEnhanced::Status_2_Feedback0, 4);
+    m_moteurDroiteFollower2.SetStatusFramePeriod(ctre::phoenix::motorcontrol::StatusFrameEnhanced::Status_3_Quadrature, 50);
 
-    m_moteurGaucheFollower.SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus0, 4);
-    m_moteurGaucheFollower.SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus1, 4);
-    m_moteurGaucheFollower.SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus2, 50);
+    m_moteurGaucheFollower.SetStatusFramePeriod(ctre::phoenix::motorcontrol::StatusFrameEnhanced::Status_1_General, 4);
+    m_moteurGaucheFollower.SetStatusFramePeriod(ctre::phoenix::motorcontrol::StatusFrameEnhanced::Status_2_Feedback0, 4);
+    m_moteurGaucheFollower.SetStatusFramePeriod(ctre::phoenix::motorcontrol::StatusFrameEnhanced::Status_3_Quadrature, 50);
 
-    m_moteurGaucheFollower2.SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus0, 4);
-    m_moteurGaucheFollower2.SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus1, 4);
-    m_moteurGaucheFollower2.SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus2, 50);
+    m_moteurGaucheFollower2.SetStatusFramePeriod(ctre::phoenix::motorcontrol::StatusFrameEnhanced::Status_1_General, 4);
+    m_moteurGaucheFollower2.SetStatusFramePeriod(ctre::phoenix::motorcontrol::StatusFrameEnhanced::Status_2_Feedback0, 4);
+    m_moteurGaucheFollower2.SetStatusFramePeriod(ctre::phoenix::motorcontrol::StatusFrameEnhanced::Status_3_Quadrature, 50);
 
     std::cout << "RobotInit Step 5" << std::endl;
     Robot::AddPeriodic([&]()
