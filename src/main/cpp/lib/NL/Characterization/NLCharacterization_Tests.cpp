@@ -313,12 +313,12 @@ void NLCharacterization_Tests::fastLoop()
                        m_leftMotor->GetMotorOutputPercent(),
                        m_leftMotorFollower->GetMotorOutputPercent(),
                        m_leftMotorFollower2->GetMotorOutputPercent(),
-                       m_rightMotor->GetOutputCurrent(),
-                       m_rightMotorFollower->GetOutputCurrent(),
-                       m_rightMotorFollower2->GetOutputCurrent(),
-                       m_leftMotor->GetOutputCurrent(),
-                       m_leftMotorFollower->GetOutputCurrent(),
-                       m_leftMotorFollower2->GetOutputCurrent(),
+                       m_rightMotor->GetStatorCurrent(),
+                       m_rightMotorFollower->GetStatorCurrent(),
+                       m_rightMotorFollower2->GetStatorCurrent(),
+                       m_leftMotor->GetStatorCurrent(),
+                       m_leftMotorFollower->GetStatorCurrent(),
+                       m_leftMotorFollower2->GetStatorCurrent(),
                        TestData[m_CurrentTestID].m_ramp);
         break;
 
