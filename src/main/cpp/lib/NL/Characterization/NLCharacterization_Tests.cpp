@@ -7,10 +7,8 @@
 NLCharacterization_Tests::NLCharacterization_Tests(
     rev::CANSparkMax *leftMotor,
     rev::CANSparkMax *leftMotorFollower,
-    rev::CANSparkMax *leftMotorFollower2,
     rev::CANSparkMax *rightMotor,
     rev::CANSparkMax *rightMotorFollower,
-    rev::CANSparkMax *rightMotorFollower2,
     frc::Encoder *externalEncoderLeft,
     frc::Encoder *externalEncoderRight,
     long nbTestLow,
@@ -25,8 +23,6 @@ NLCharacterization_Tests::NLCharacterization_Tests(
       m_leftMotor(leftMotor),
       m_rightMotorFollower(rightMotorFollower),
       m_leftMotorFollower(leftMotorFollower),
-      m_rightMotorFollower2(rightMotorFollower2),
-      m_leftMotorFollower2(leftMotorFollower2),
       m_externalEncoderLeft(externalEncoderLeft),
       m_externalEncoderRight(externalEncoderRight)
 {
@@ -117,7 +113,7 @@ void NLCharacterization_Tests::previousTest()
         m_CurrentTestID--;
     }
 }
-void NLCharacterization_Tests::setCurrentTest(uint8_t testId)
+void NLCharacterization_Tests::setCurrentTest(int8_t testId)
 {
     assert(m_state == State::Stopped);
     assert((testId > 0) && (testId < (m_nbTotalTest - 1)));
@@ -136,17 +132,13 @@ void NLCharacterization_Tests::start()
 
     m_rightMotor->SetOpenLoopRampRate(TestData[m_CurrentTestID].m_ramp);
     m_rightMotorFollower->SetOpenLoopRampRate(TestData[m_CurrentTestID].m_ramp);
-    m_rightMotorFollower2->SetOpenLoopRampRate(TestData[m_CurrentTestID].m_ramp);
     m_leftMotor->SetOpenLoopRampRate(TestData[m_CurrentTestID].m_ramp);
     m_leftMotorFollower->SetOpenLoopRampRate(TestData[m_CurrentTestID].m_ramp);
-    m_leftMotorFollower2->SetOpenLoopRampRate(TestData[m_CurrentTestID].m_ramp);
 
     std::cout << "left ramp" << m_leftMotor->GetOpenLoopRampRate() << std::endl;
     std::cout << "leftfolow ramp" << m_leftMotorFollower->GetOpenLoopRampRate() << std::endl;
-    std::cout << "leftfollow2 ramp" << m_leftMotorFollower2->GetOpenLoopRampRate() << std::endl;
     std::cout << "right ramp" << m_leftMotor->GetOpenLoopRampRate() << std::endl;
     std::cout << "rightfollow ramp" << m_leftMotorFollower->GetOpenLoopRampRate() << std::endl;
-    std::cout << "rightfollow2 ramp" << m_leftMotorFollower2->GetOpenLoopRampRate() << std::endl;
 
     m_externalEncoderLeft->Reset();
     m_externalEncoderRight->Reset();
@@ -161,10 +153,8 @@ void NLCharacterization_Tests::stop()
     // setting ramp
     m_rightMotor->SetOpenLoopRampRate(m_oldRamp);
     m_rightMotorFollower->SetOpenLoopRampRate(m_oldRamp);
-    m_rightMotorFollower2->SetOpenLoopRampRate(m_oldRamp);
     m_leftMotor->SetOpenLoopRampRate(m_oldRamp);
     m_leftMotorFollower->SetOpenLoopRampRate(m_oldRamp);
-    m_leftMotorFollower2->SetOpenLoopRampRate(m_oldRamp);
 
     // set state of test
     m_state = State::AskForStop;
@@ -175,18 +165,18 @@ NLCharacterization_Tests::State NLCharacterization_Tests::getState()
     return m_state;
 }
 
-uint8_t NLCharacterization_Tests::getCurrentTestId()
+int8_t NLCharacterization_Tests::getCurrentTestId()
 {
     return m_CurrentTestID;
 }
 
-char *NLCharacterization_Tests::getCurrentTestDescription(char *pmessage, uint size_terminated_null_char_included)
+char *NLCharacterization_Tests::getCurrentTestDescription(char *pmessage, int size_terminated_null_char_included)
 {
     char desc[256];
     sprintf(desc, "TEST %d / %d [ %.2f Volts || Rampe : %.2f ]", m_CurrentTestID + 1, m_nbTotalTest, TestData[m_CurrentTestID].m_voltage, TestData[m_CurrentTestID].m_ramp);
     std::cout << "sprintf passé" << std::endl;
-    uint sizetocopy = (NMIN(size_terminated_null_char_included, 256) - 1);
-    std::cout << "uint passé" << std::endl;
+    int sizetocopy = (NMIN(size_terminated_null_char_included, 256) - 1);
+    std::cout << "int passé" << std::endl;
     strncpy(pmessage, desc, sizetocopy);
     std::cout << "strncpy passé" << std::endl;
     pmessage[sizetocopy] = 0;
@@ -194,10 +184,10 @@ char *NLCharacterization_Tests::getCurrentTestDescription(char *pmessage, uint s
     return pmessage;
 }
 
-uint NLCharacterization_Tests::getTestsCounter()
+int NLCharacterization_Tests::getTestsCounter()
 {
-    uint counter = 0;
-    for (uint i = 0; i < m_nbTotalTest; i++)
+    int counter = 0;
+    for (int i = 0; i < m_nbTotalTest; i++)
     {
         if (BITGET(TestData[i].m_flags, 0))
         {
@@ -207,10 +197,10 @@ uint NLCharacterization_Tests::getTestsCounter()
     return counter;
 }
 
-uint NLCharacterization_Tests::areAllTestsDone()
+int NLCharacterization_Tests::areAllTestsDone()
 {
-    uint counter = 0;
-    for (uint i = 0; i < m_nbTotalTest; i++)
+    int counter = 0;
+    for (int i = 0; i < m_nbTotalTest; i++)
     {
         if (BITGET(TestData[i].m_flags, 0))
         {
@@ -224,16 +214,16 @@ uint NLCharacterization_Tests::areAllTestsDone()
     return (counter == m_nbTotalTest) ? 1 : 0;
 }
 
-char *NLCharacterization_Tests::getCurrentFileLogName(char *pbuffer, uint size_terminated_null_char_included)
+char *NLCharacterization_Tests::getCurrentFileLogName(char *pbuffer, int size_terminated_null_char_included)
 {
     if (m_LogFile)
     {
-        uint sizecopied = m_LogFile->GetFileName().copy(pbuffer, size_terminated_null_char_included - 1);
+        int sizecopied = m_LogFile->GetFileName().copy(pbuffer, size_terminated_null_char_included - 1);
         pbuffer[sizecopied] = 0;
     }
     else
     {
-        uint sizetocopy = NMIN(14, size_terminated_null_char_included - 1);
+        int sizetocopy = NMIN(14, size_terminated_null_char_included - 1);
         strncpy(pbuffer, "No file opened", sizetocopy);
         pbuffer[sizetocopy] = 0;
     }
@@ -250,7 +240,7 @@ void NLCharacterization_Tests::fastLoop()
     case State::AskForStart:
         char prefix[512];
         char invertedPrefix[8];
-        sprintf(invertedPrefix, "L%d%dR%d%d", (int)m_leftMotor->GetInverted(), (int)m_leftMotorFollower->GetInverted(), m_leftMotorFollower2->GetInverted(), (int)m_rightMotor->GetInverted(), (int)m_rightMotorFollower->GetInverted(), m_rightMotorFollower2->GetInverted());
+        sprintf(invertedPrefix, "L%d%dR%d%d", (int)m_leftMotor->GetInverted(), (int)m_leftMotorFollower->GetInverted(), (int)m_rightMotor->GetInverted(), (int)m_rightMotorFollower->GetInverted());
 
         if (TestData[m_CurrentTestID].m_voltage < 0)
         {
@@ -261,17 +251,15 @@ void NLCharacterization_Tests::fastLoop()
             sprintf(prefix, "/home/lvuser/logs/+_%s_%d_%.2fvolts_", invertedPrefix, m_CurrentTestID, TestData[m_CurrentTestID].m_voltage);
         }
         std::cout << "avant logfile" << std::endl;
-        m_LogFile = new CSVLogFile(prefix, "encoderGetD", "encoderGetG", "encoderGetRawD", "encoderGetRawG", "Theorical Voltage", "BusVoltageD1", "BusVoltageD2", "BusVoltageD3", "BusVoltageG1", "BusVoltageG2", "BusVoltageG3", "AppliedOutputD1", "AppliedOutputD2", "AppliedOutputD3", "AppliedOutputG1", "AppliedOutputG2", "AppliedOutputG3", "currentD1", "currentD2", "currentD3", "currentG1", "currentG2", "currentG3", "rampActive");
+        m_LogFile = new CSVLogFile(prefix, "encoderGetD", "encoderGetG", "encoderGetRawD", "encoderGetRawG", "Theorical Voltage", "BusVoltageD1", "BusVoltageD2", "BusVoltageG1", "BusVoltageG2", "AppliedOutputD1", "AppliedOutputD2", "AppliedOutputG1", "AppliedOutputG2", "currentD1", "currentD2", "currentG1", "currentG2", "rampActive");
 
         BITSET(TestData[m_CurrentTestID].m_flags, 0);
         m_time0 = std::time(0);
 
         m_leftMotor->Set(TestData[m_CurrentTestID].m_voltage / m_leftMotor->GetBusVoltage());
         m_leftMotorFollower->Set(TestData[m_CurrentTestID].m_voltage / m_leftMotorFollower->GetBusVoltage());
-        m_leftMotorFollower2->Set(TestData[m_CurrentTestID].m_voltage / m_leftMotorFollower2->GetBusVoltage());
         m_rightMotor->Set(TestData[m_CurrentTestID].m_voltage / m_rightMotor->GetBusVoltage());
         m_rightMotorFollower->Set(TestData[m_CurrentTestID].m_voltage / m_rightMotorFollower->GetBusVoltage());
-        m_rightMotorFollower2->Set(TestData[m_CurrentTestID].m_voltage / m_rightMotorFollower2->GetBusVoltage());
 
         m_state = State::Started;
         break;
@@ -303,32 +291,24 @@ void NLCharacterization_Tests::fastLoop()
                        TestData[m_CurrentTestID].m_voltage,
                        m_rightMotor->GetBusVoltage(),
                        m_rightMotorFollower->GetBusVoltage(),
-                       m_rightMotorFollower2->GetBusVoltage(),
                        m_leftMotor->GetBusVoltage(),
                        m_leftMotorFollower->GetBusVoltage(),
-                       m_leftMotorFollower2->GetBusVoltage(),
                        m_rightMotor->GetAppliedOutput(),
                        m_rightMotorFollower->GetAppliedOutput(),
-                       m_rightMotorFollower2->GetAppliedOutput(),
                        m_leftMotor->GetAppliedOutput(),
                        m_leftMotorFollower->GetAppliedOutput(),
-                       m_leftMotorFollower2->GetAppliedOutput(),
                        m_rightMotor->GetOutputCurrent(),
                        m_rightMotorFollower->GetOutputCurrent(),
-                       m_rightMotorFollower2->GetOutputCurrent(),
                        m_leftMotor->GetOutputCurrent(),
                        m_leftMotorFollower->GetOutputCurrent(),
-                       m_leftMotorFollower2->GetOutputCurrent(),
                        TestData[m_CurrentTestID].m_ramp);
         break;
 
     case State::AskForStop:
         m_leftMotor->StopMotor();
         m_leftMotorFollower->StopMotor();
-        m_leftMotorFollower2->StopMotor();
         m_rightMotor->StopMotor();
         m_rightMotorFollower->StopMotor();
-        m_rightMotorFollower2->StopMotor();
         delete m_LogFile;
         m_LogFile = nullptr;
         m_state = State::Stopped;

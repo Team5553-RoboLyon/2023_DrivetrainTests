@@ -13,10 +13,10 @@ struct VA
 class KineticToVoltage
 {
 
-  //k_lut[MoteurIndex][ForwardBackward][Kv, Ka, Kintersept]
+  // k_lut[MoteurIndex][ForwardBackward][Kv, Ka, Kintersept]
   double k_lut[4][2][3];
 
 public:
-  void SetMotorCoefficients(uint motorID, uint isBackward, double kv, double ka, double vintersept);
-  double getVoltage(uint motorID, const VA *pva);
+  void SetMotorCoefficients(int motorID, int isBackward, double kv, double ka, double vintersept);
+  double getVoltage(int motorID, const VA *pva);
 };

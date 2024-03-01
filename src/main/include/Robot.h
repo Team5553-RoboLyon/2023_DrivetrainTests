@@ -99,12 +99,10 @@ private:
 
   CSVLogFile *m_LogFile, *m_LogFileDriving;
   nt::GenericEntry *m_LogFileName, *m_PowerEntry, *m_logGyro, *m_LogFilenameDriving, *m_speedY, *m_speedX, *m_customEntry;
-  rev::CANSparkMax m_moteurDroite{1 , rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_moteurDroite{1, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_moteurDroiteFollower{2, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_moteurDroiteFollower2{3, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_moteurGauche{4, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_moteurGaucheFollower{5, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_moteurGaucheFollower2{6, rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_moteurGauche{3, rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_moteurGaucheFollower{4, rev::CANSparkMax::MotorType::kBrushless};
 
   frc::PowerDistribution m_pdp;
 
@@ -153,10 +151,8 @@ private:
   NLCharacterization_Tests m_motorCharacterizationTests{
       &m_moteurGauche,
       &m_moteurGaucheFollower,
-      &m_moteurGaucheFollower2,
       &m_moteurDroite,
       &m_moteurDroiteFollower,
-      &m_moteurDroiteFollower2,
       &m_encodeurExterneGauche,
       &m_encodeurExterneDroite,
       TEST_LOWVOLTAGE_NB,

@@ -36,10 +36,8 @@ public:
   };
   NLCharacterization_Tests(rev::CANSparkMax *leftMotor,
                            rev::CANSparkMax *leftMotorFollower,
-                           rev::CANSparkMax *leftMotorFollower2,
                            rev::CANSparkMax *rightMotor,
                            rev::CANSparkMax *rightMotorFollower,
-                           rev::CANSparkMax *rightMotorFollower2,
                            frc::Encoder *externalEncoderLeft,
                            frc::Encoder *externalEncoderRight,
                            long nbTestLow,
@@ -53,33 +51,31 @@ public:
   ~NLCharacterization_Tests();
   void nextTest();
   void previousTest();
-  void setCurrentTest(uint8_t testId);
+  void setCurrentTest(int8_t testId);
   void start();
   void stop();
   void fastLoop();
   State getState();
-  uint8_t getCurrentTestId();
-  char *getCurrentFileLogName(char *pbuffer, uint size);
-  char *getCurrentTestDescription(char *pmessage, uint size_terminated_null_char_included);
-  uint getTestsCounter();
-  uint areAllTestsDone();
+  int8_t getCurrentTestId();
+  char *getCurrentFileLogName(char *pbuffer, int size);
+  char *getCurrentTestDescription(char *pmessage, int size_terminated_null_char_included);
+  int getTestsCounter();
+  int areAllTestsDone();
 
 private:
   rev::CANSparkMax *m_rightMotor;
   rev::CANSparkMax *m_rightMotorFollower;
-  rev::CANSparkMax *m_rightMotorFollower2;
   rev::CANSparkMax *m_leftMotor;
   rev::CANSparkMax *m_leftMotorFollower;
-  rev::CANSparkMax *m_leftMotorFollower2;
 
   frc::Encoder *m_externalEncoderRight;
   frc::Encoder *m_externalEncoderLeft;
 
   TestSpecs *TestData;
   State m_state = State::Stopped;
-  uint8_t m_CurrentTestID = 0;
+  int8_t m_CurrentTestID = 0;
   double m_oldRamp;
-  uint8_t m_nbTotalTest;
+  int8_t m_nbTotalTest;
 
   CSVLogFile *m_LogFile;
 
